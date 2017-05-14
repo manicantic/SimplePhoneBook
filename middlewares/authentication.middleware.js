@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 
 
 function authenticate(req, res, next) {
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
-  //  console.log(token)
+    var token = req.body.token || req.query.token || req.headers['x-auth-token'];
+    console.log(token)
     if (token) {
 
     jwt.verify(token, 'secret', function(err, decoded) {      

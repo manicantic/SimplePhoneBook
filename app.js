@@ -10,7 +10,6 @@ const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgr
 const authenticationMiddleware = require('./middlewares/authentication.middleware');
 
 
-const users = require('./routes/users.routes');
 const login = require('./routes/login.routes');
 const contacts = require('./routes/contacts.routes');
 
@@ -35,7 +34,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(function(req,res,next){
-    res.setHeader('Access-Control-Allow-Origin', '127.0.0.1');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
 	next();
 });
 
@@ -47,11 +47,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // define routes
-app.use('/', login);
-app.use('/contacts', authenticationMiddleware.authenticate, contacts );
-app.use('/users', users);
-
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.use('/api/auth', login);
+app.use('/api/contacts', authenticationMiddleware.authenticate, contacts );
+
+app.use('/static', express.static(path.join(__dirname, 'react', 'build', 'static')));
+app.use('/*', (req, res) => res.sendFile('./react/build/index.html', { root: __dirname }));
+
 
 const client = new pg.Client(connectionString);
 client.connect( (err) => {
