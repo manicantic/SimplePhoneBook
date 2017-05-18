@@ -10,7 +10,7 @@ class ContactAddBox extends Component {
                             type="text"
                             className="form-control"
                             id="Name"
-                            value={this.props.user.name}
+                            value={this.props.contact.name}
                             placeholder="Name"/>
                     </div>
                     <div className="form-group">
@@ -19,7 +19,7 @@ class ContactAddBox extends Component {
                             type="text"
                             className="form-control"
                             id="Surname"
-                            value={this.props.user.surname}
+                            value={this.props.contact.surname}
                             placeholder="Surame"/>
                     </div>
                     <div className="form-group">
@@ -28,7 +28,7 @@ class ContactAddBox extends Component {
                             type="tel"
                             className="form-control"
                             id="Phone"
-                            value={this.props.user.phone}
+                            value={this.props.contact.phone}
                             placeholder="Phone"/>
                     </div>
                     <div className="form-group">
@@ -37,7 +37,7 @@ class ContactAddBox extends Component {
                             type="email"
                             className="form-control"
                             id="Email"
-                            value={this.props.user.email}
+                            value={this.props.contact.email}
                             placeholder="email"/>
                     </div>
                     <div className="form-group">
@@ -46,10 +46,10 @@ class ContactAddBox extends Component {
                             type="date"
                             className="form-control"
                             id="Birthday"
-                            value={this.props.user.birthday}
+                            value={this.props.contact.birthday}
                             placeholder="Birthday"/>
                     </div>
-                    <button className="btn btn-default" onClick={this.props.addContact}>Add contact</button>
+                    <button className="btn btn-default" onClick={this.props.addContact}>{this.props.buttonName}</button>
             </div>
         );
     }

@@ -5,7 +5,7 @@ class ContactsList extends Component {
     render() {
 
         var contactComponents = this.props.contacts.map(( c, index) => {
-            return (<Contact contact={c} key={index} /> )
+            return (<Contact contact={c} key={index} changeInput={this.props.changeInput} deleteContact={this.props.deleteContact} editContact={this.props.editContact} saveEditedContact={this.props.saveEditedContact} editId={this.props.editId} setEditMode={this.props.setEditMode} /> )
         })
 
         return (
@@ -20,6 +20,8 @@ class ContactsList extends Component {
                                 <th>Phone</th>
                                 <th>Email</th>
                                 <th>Birthday</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>

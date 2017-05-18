@@ -10,7 +10,7 @@ function getAll(req, res){
 
 function createContact(req,res){
     contactsService.createContact(req.decoded.userId,req.body)
-    .then((contacts) => {return res.json(contacts)})
+    .then((contactId) => {return res.json({id:contactId})})
     .catch(err => res.sendStatus(500));
 };
 
@@ -33,8 +33,8 @@ function updateContact(req,res){
     let contact=req.body;
     let userId=req.decoded.userId;
     contactsService.updateContact(userId,contactId,contact)
-    .then( (result) => {
-        if(result){
+    .then( (updated) => {
+        if(updated){
             return res.sendStatus(200);
         }
         else{
@@ -48,8 +48,8 @@ function deleteContact(req,res) {
     let contactId= req.params.id;
     let userId=req.decoded.userId;
     contactsService.deleteContact(contactId, userId)
-    .then( (result) => {
-        if(result){
+    .then( (deleted) => {
+        if(deleted){
             return res.sendStatus(200);
         }
         else{

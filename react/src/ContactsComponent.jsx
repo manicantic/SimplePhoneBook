@@ -14,7 +14,7 @@ class ContactsComponent extends Component {
             token: this.props.getUser().token,
             isLoading: false,
             isError: false,
-            user: {
+            newContact: {
                 name:'',
                 surname:'',
                 email:'',
@@ -22,9 +22,14 @@ class ContactsComponent extends Component {
                 birthday:''
 
             },
+            editId:'',
+            editContact:''
         }
         this.changeInput=this.changeInput.bind(this);
         this.addContact=this.addContact.bind(this);
+        this.setEditMode=this.setEditMode.bind(this);
+        this.saveEditedContact=this.saveEditedContact.bind(this);
+        this.deleteContact=this.deleteContact.bind(this);
     }
 
     componentDidMount() {
@@ -51,11 +56,11 @@ class ContactsComponent extends Component {
              }
              return response.json();
          }).then( (contacts) => {
-             let user={name:'',surname:'',email:'',phone:'',birthday:''};
+             let newContact={name:'',surname:'',email:'',phone:'',birthday:''};
              _this.setState({
                  contacts: contacts,
                  isLoading: false,
-                 user: user
+                 newContact: newContact
              });
          }).catch( (err) =>{
              _this.setState({
@@ -67,47 +72,154 @@ class ContactsComponent extends Component {
          });
     }
 
-    clearUser(){
-        let user={name:'',surname:'',email:'',phone:'',birthday:''}
-        this.setState({user:user});
-    }
+    clearNewContact(isEdited){
+        let newContact={name:'',surname:'',email:'',phone:'',birthday:''}
+        if(isEdited){
+            this.setState({editContact:newContact});
+        }
+        else{
+            this.setState({newContact:newContact});
+        }
+    };
 
     changeInput(event) {
-        let user=this.state.user;
+        if(this.state.editId === ''){
+        let newContact=this.state.newContact;
         if (event.target.id === 'Name') {
-            user.name=event.target.value;
+            newContact.name=event.target.value;
         }
         else if (event.target.id === 'Surname') {
-            user.surname=event.target.value;
+            newContact.surname=event.target.value;
         }
         else if (event.target.id === 'Email') {
-            user.email=event.target.value;
+            newContact.email=event.target.value;
         } 
         else if (event.target.id === 'Phone') {
-            user.phone=event.target.value;
+            newContact.phone=event.target.value;
         }
         else if (event.target.id === 'Birthday') {
-            user.birthday=event.target.value;
+            newContact.birthday=event.target.value;
         }
-        this.setState({user: user})
-        //console.log(JSON.stringify(this.state.user));
+        this.setState({newContact: newContact})
+        }else{
+            let editContact=this.state.editContact;
+        if (event.target.id === 'Name') {
+            editContact.name=event.target.value;
+        }
+        else if (event.target.id === 'Surname') {
+            editContact.surname=event.target.value;
+        }
+        else if (event.target.id === 'Email') {
+            editContact.email=event.target.value;
+        } 
+        else if (event.target.id === 'Phone') {
+            editContact.phone=event.target.value;
+        }
+        else if (event.target.id === 'Birthday') {
+            editContact.birthday=event.target.value;
+        }
+        this.setState({editContact: editContact})
+        }
+    
+        //console.log(JSON.stringify(this.state.newContact));
 
+    };
+
+    addNewContact(newId){
+        let contact = this.state.newContact;
+        contact.id=newId;
+        contact.user_id=this.props.getUser().user.id;
+        let newContact={name:'',surname:'',email:'',phone:'',birthday:''}
+        this.setState({
+            contacts: [...this.state.contacts, contact],
+            newContact:newContact
+        });
     };
 
     addContact(){
         fetch(`http://localhost:3000/api/contacts?token=${this.state.token}`, {
             method: 'POST',
-            body: JSON.stringify(this.state.user),
+            body: JSON.stringify(this.state.newContact),
              headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
         }).then((response) => {
             if(response.status === 200){
-                this.getContacts();
+                console.log('dobio sam 200');
+                return response.json();
             }
             else{
-                this.clearUser();
+                this.clearNewContact();
+            }
+        }).then( (body) => {
+            console.log('citam rezultate body-a')
+            this.addNewContact(body.id);
+        })
+        .catch((err) => {
+            this.setState({isError:true});
+        })
+    };
+
+    removeContactFromList(deletedId){
+        this.setState({
+            contacts: this.state.contacts.filter( contact => contact.id != deletedId)
+        })
+    };
+
+    deleteContact(event){
+        let deletedId=event.target.value;
+        fetch(`http://localhost:3000/api/contacts/${deletedId}?token=${this.state.token}`, {
+            method: 'DELETE',
+             //   headers: new Headers({
+		  //       'X-Auth-Token': `${this.state.token}`
+          //  })
+        }).then((response) => {
+            if(response.status === 200){
+                console.log('u deletu sam')
+                this.removeContactFromList(deletedId);
+            }
+            else{
+                
+            }
+        }).catch((err) => {
+            this.setState({isError:true});
+        })
+    };
+
+    setEditMode(event){
+        this.setState({
+            editId:event.target.value,
+            editContact: this.state.contacts.find(contact => (contact.id == event.target.value))
+        })
+    };
+
+    changeEditContact(){
+        this.setState({
+            contacts: this.state.contacts.map( contact => {
+                if(contact.id != this.state.editContact.id){
+                    return contact;
+                }
+                return this.state.editContact;
+            } ),
+            editId: ''
+        })
+    }
+
+    saveEditedContact(){
+        fetch(`http://localhost:3000/api/contacts/${this.state.editContact.id}?token=${this.state.token}`, {
+            method: 'PUT',
+            body: JSON.stringify(this.state.editContact),
+             headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+        }).then((response) => {
+            if(response.status === 200){
+                this.changeEditContact();
+            }
+            else{
+                this.clearNewContact();
             }
         }).catch((err) => {
             this.setState({isError:true});
@@ -116,7 +228,7 @@ class ContactsComponent extends Component {
 
 
     render() {
-
+        console.log(this.state.contacts);
         if(this.state.unauthorized) {
             return (
                 <Redirect to="/login" />
@@ -125,8 +237,8 @@ class ContactsComponent extends Component {
 
         return (
             <div className="container">
-                  <ContactsList contacts={ this.state.contacts } />
-                  <ContactAddBox changeInput={this.changeInput} addContact={this.addContact} user={this.state.user} />
+                  <ContactsList changeInput={this.changeInput} contacts={ this.state.contacts } deleteContact={this.deleteContact} editId={this.state.editId} setEditMode={this.setEditMode} editContact={this.state.editContact} saveEditedContact={this.saveEditedContact}/>
+                  <ContactAddBox changeInput={this.changeInput} buttonName={"Add contact"} addContact={this.addContact} contact={this.state.newContact} />
             </div>
 
         );
