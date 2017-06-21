@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {BrowserRouter as Router, Route, Switch, hashHistory, Redirect} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch, browserHistory, Redirect} from 'react-router-dom';
 import PersonalInfoComponent from './PersonalInfoComponent';
 import LoginComponent from './LoginComponent';
 import ContactsComponent from './ContactsComponent';
@@ -40,7 +40,7 @@ class App extends Component {
   render() {
     console.log('rendreriram u app');
     return (
-      <Router history={hashHistory}>
+      <Router history={browserHistory}>
         <div >
           <Header/>
           <Switch>

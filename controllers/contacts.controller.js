@@ -18,14 +18,9 @@ function getContact(req,res){
     let contactId= req.params.id;
     contactsService.getContact(contactId)
     .then((contact) => {
-        if(contact){
             return res.json(contact);
-        }
-        else{
-            return res.sendStatus(404);
-        }
         })
-    .catch(err => res.sendStatus(500));
+    .catch(err => res.sendStatus(err.status));
 };
 
 function updateContact(req,res){
@@ -34,14 +29,9 @@ function updateContact(req,res){
     let userId=req.decoded.userId;
     contactsService.updateContact(userId,contactId,contact)
     .then( (updated) => {
-        if(updated){
-            return res.sendStatus(200);
-        }
-        else{
-            return res.sendStatus(404);
-        }
+        return res.sendStatus(200);
     })
-    .catch(err => res.sendStatus(500))
+    .catch(err => res.sendStatus(err.status))
 };
 
 function deleteContact(req,res) {
@@ -49,14 +39,9 @@ function deleteContact(req,res) {
     let userId=req.decoded.userId;
     contactsService.deleteContact(contactId, userId)
     .then( (deleted) => {
-        if(deleted){
-            return res.sendStatus(200);
-        }
-        else{
-            return res.sendStatus(404);
-        }
+        return res.sendStatus(200);
     })
-    .catch(err => res.sendStatus(500))
+    .catch(err => res.sendStatus(err.status))
 };
 
 module.exports = {

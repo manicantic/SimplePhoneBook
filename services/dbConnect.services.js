@@ -26,12 +26,14 @@ function doQuery(query, data) {
 
             if (err) {
                 console.log(err);
+                err.status=500;
                 return deferred.reject(err);
             }
             console.log(result);
             console.log(result.rows);
-            if (result.rows.length == 0) {
-                deferred.resolve(undefined);
+            if (result.rows.length === 0) {
+                let err={status:404}
+                deferred.reject(err);
             } else if (result.rows.length == 1) {
                 deferred.resolve(result.rows[0]);
             } else {
@@ -56,6 +58,10 @@ function doInsert(query, data) {
                 console.log(err);
                 return deferred.reject(err);
             }
+            if (result.rows.length === 0) {
+                let err={status:404}
+                return deferred.reject(err);
+            }
             console.log(result);
             console.log(result.rows);
             deferred.resolve(result.rows[0].id);
@@ -76,6 +82,10 @@ function doUpdateOrDelete(query, data) {
 
             if (err) {
                 console.log(err);
+                return deferred.reject(err);
+            }
+            if(result.rowCount === 0){
+                let err={status:404}
                 return deferred.reject(err);
             }
             console.log(result);

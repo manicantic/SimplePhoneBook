@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ContactAddBox from './ContactAddBox';
 
-class Contact extends Component {
-    render() {
-        if(this.props.editId == this.props.contact.id){
+const Contact = (props) => {
+        if(props.editId === props.contact.id){
             return(
                 <tr>
                     <td>
-                        <ContactAddBox buttonName={"Save changes"} addContact={this.props.saveEditedContact} contact={this.props.editContact} changeInput={this.props.changeInput} />
+                        <ContactAddBox buttonName={"Save changes"} addContact={props.saveEditedContact} contact={props.editContact} changeInput={props.changeInput} />
                     </td>
                 </tr>
             );
@@ -16,32 +15,32 @@ class Contact extends Component {
         return (
                 <tr>
                     <td>
-                        {this.props.contact.id}
+                        {props.contact.id}
                     </td>
                     <td>
-                        {this.props.contact.name}
+                        {props.contact.name}
                     </td>
                     <td>
-                        {this.props.contact.surname}
+                        {props.contact.surname}
                     </td>
                     <td>
-                        {this.props.contact.phone}
+                        {props.contact.phone}
                     </td>
                     <td>
-                        {this.props.contact.email}
+                        {props.contact.email}
                     </td>
                     <td>
-                        {this.props.contact.birthday.substring(0,10)}
+                        {props.contact.birthday.substring(0,10)}
                     </td>
                     <td>
-                        <button className="btn btn-default" value={this.props.contact.id} onClick={this.props.setEditMode}>Edit</button>
+                        <button className="btn btn-default" value={props.contact.id} onClick={props.setEditMode}>Edit</button>
                     </td>
                     <td>
-                        <button className="btn btn-default" value={this.props.contact.id} onClick={this.props.deleteContact} >Delete</button>
+                        <button className="btn btn-default" value={props.contact.id} onClick={props.deleteContact} >Delete</button>
                     </td>
                 </tr>
         );
     }
-}
+
 
 export default Contact;

@@ -22,7 +22,7 @@ class ContactsComponent extends Component {
                 birthday:''
 
             },
-            editId:'',
+            editId:-1,
             editContact:''
         }
         this.changeInput=this.changeInput.bind(this);
@@ -163,7 +163,7 @@ class ContactsComponent extends Component {
 
     removeContactFromList(deletedId){
         this.setState({
-            contacts: this.state.contacts.filter( contact => contact.id != deletedId)
+            contacts: this.state.contacts.filter( contact => contact.id !== deletedId)
         })
     };
 
@@ -189,7 +189,7 @@ class ContactsComponent extends Component {
 
     setEditMode(event){
         this.setState({
-            editId:event.target.value,
+            editId:parseInt(event.target.value),
             editContact: this.state.contacts.find(contact => (contact.id == event.target.value))
         })
     };
@@ -228,7 +228,7 @@ class ContactsComponent extends Component {
 
 
     render() {
-        console.log(this.state.contacts);
+        console.log(this.state.editId + typeof(this.state.editId));
         if(this.state.unauthorized) {
             return (
                 <Redirect to="/login" />

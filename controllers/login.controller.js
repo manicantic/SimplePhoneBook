@@ -11,15 +11,13 @@ function userLogin(req,res) {
     userService.getUser(username,password)
     .then( 
       (results) => {
-          if(results){
               let token= auth.createToken(results);
               return res.status(200).json({token: token, user : userAdapter.toSimpleUser(results)});
-          }
-          else{
-              return res.status(401).json({message: 'Wrong credentials'})
-          }
+              
       }
-     );
+     ).catch( (err) => {
+         return res.status(401).json({message: 'Wrong credentials'})
+     });
 };
 
 module.exports = {
